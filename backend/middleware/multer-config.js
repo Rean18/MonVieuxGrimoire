@@ -15,6 +15,7 @@ const storage = multer.diskStorage({
         const extension = MIME_TYPES[file.mimetype];
         callback(null, name + Date.now() + '.' + extension); // question Etienne : Pourquoi le null ? 
     }
+    
 });
 
 module.exports = multer({ storage }).single('image');

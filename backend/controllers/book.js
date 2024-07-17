@@ -33,7 +33,15 @@ const fs = require('fs');
         });
 };
   exports.getBooks = (req, res, next) => {
-    Book.find()
+    Book.aggregate([
+        {
+            $addFields: {
+                averageRating: { $avg: "$ratings.grade" }
+            }
+        },
+        { $sort: { averageRating: -1 } }
+    ])
+    
         .then(books => res.status(200).json(books))
         .catch(error => {
             res.status(400).json({ error });
