@@ -52,7 +52,8 @@ exports.getBestRatings = (req, res, next) => {
             }
         },
         // Trie les livres par `averageRating` en ordre décroissant
-        { $sort: { averageRating: -1 } }
+        { $sort: { averageRating: -1 } },
+        { $limit: 3 }
     ])
     .then((books) => {
         console.log(req.body);

@@ -19,18 +19,24 @@ exports.uploadImage = async (req, res, next) => {
         }
         
     });
-    console.log(req.file)
     const { buffer, originalname } = req.file;
-    originalname = originalname.split('.')[0]
+    const newName = originalname.split('.')[0];
     const timestamp = new Date().toISOString();
-    const ref = `${timestamp}-${originalname}.webp`;
-    console.log(ref)
+    const ref = `${timestamp}-${newName}.webp`;
         await sharp(buffer)
-        .webp({ quality: 20 })
+        .webp({ quality: 50 })
         .toFile("./images/" + ref);
-    
-        next();
+        
 
+        // Obtenir l'hôte et le port actuels
+        const host = req.get('host');
+
+        // Générer l'URL de l'image
+        const imageUrl = `http://${host}/images/${ref}`;
+        // Ajouter l'URL de l'image à la requête pour une utilisation ultérieure
+        req.imageUrl = imageUrl;
+
+        next();
 }
 
 

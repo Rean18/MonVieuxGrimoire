@@ -10,7 +10,7 @@ const fs = require('fs');
     const book = new Book({
         ...bookObject,
         userId: req.auth.userId,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        imageUrl: req.imageUrl // récupérée du multer-config
     });
 
     book.save()
