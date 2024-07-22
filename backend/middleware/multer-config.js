@@ -1,7 +1,7 @@
 const multer = require('multer');
 const express = require('express');
-const fs = require('fs')
-const app = express();
+const sharp = require('sharp');
+const fs = require('fs');
 
  const MIME_TYPES = {
     'image/jpg' : 'jpg',
@@ -9,25 +9,27 @@ const app = express();
     'image/png' : 'png'
  };
 
-app.use(express.static('./images'));
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
 
 // app.post("/", upload.single("image")       Ou le mettre ? dans Books Routes ? 
 exports.uploadImage = async (req, res, next) => {
-    fs.access("../images", (error) => {
+    fs.access("./images", (error) => {
         if (error) {
-            fs.mkdirSync('../images');
+            fs.mkdirSync('./images');
         }
         
     });
+    console.log(req.file)
     const { buffer, originalname } = req.file;
+    originalname = originalname.split('.')[0]
     const timestamp = new Date().toISOString();
     const ref = `${timestamp}-${originalname}.webp`;
+    console.log(ref)
         await sharp(buffer)
         .webp({ quality: 20 })
-        .toFile("../images/" + ref);
+        .toFile("./images/" + ref);
+    
+        next();
 
 }
 
