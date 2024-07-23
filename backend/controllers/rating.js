@@ -12,9 +12,6 @@ exports.postRating = (req, res, next) => {
                 res.status(401).json({ message: 'Unauthorized'}) 
             } else {
                 // Ajoute l'id de l'évaluateur et la note attribuée
-                console.log(req.auth.userId);
-                console.log(req.body.rating);
-                
                 Book.updateOne(
                     { _id: req.params.id },
                     { $push: { ratings: { userId: req.auth.userId, grade: parseInt(req.body.rating) } } }
@@ -56,7 +53,6 @@ exports.getBestRatings = (req, res, next) => {
         { $limit: 3 }
     ])
     .then((books) => {
-        console.log(req.body);
         return res.status(200).json(books);
     })
     .catch(error => res.status(400).json({ error }));

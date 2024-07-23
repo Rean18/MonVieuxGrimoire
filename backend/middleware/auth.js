@@ -12,6 +12,5 @@ module.exports = (req, res, next) => {
     
     } catch(error) {
         res.status(401).json({ error });
-        console.log('erreur de vérification')
     } 
 ;}

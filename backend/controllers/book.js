@@ -16,7 +16,6 @@ const fs = require('fs');
     book.save()
         .then(() => {
             res.status(201).json({ message: 'Livre enregistré !' });
-            console.log(book);
         })
         .catch(error => {
             res.status(400).json({ error });
@@ -51,7 +50,8 @@ const fs = require('fs');
 exports.modifyBook = (req, res, next) => {
   const bookObject = req.file ? {
       ...JSON.parse(req.body.book),
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      imageUrl: req.imageUrl
+    //   `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   } : { ...req.body };
 
   delete bookObject.userId;
@@ -60,14 +60,17 @@ exports.modifyBook = (req, res, next) => {
       .then((book) => {
           if (book.userId != req.auth.userId) {
               res.status(401).json({ message: 'Non-autorisé' });
-          } else {
+          }
+          if (!req.file){
+            bookObject.imageUrl = book.imageUrl
+          }
               Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
                   .then(() => res.status(200).json({ message: 'Livre modifié !' }))
                   .catch(error => {
                       res.status(401).json({ error });
                       console.error('Error updating book:', error);
                   });
-          }
+          
       })
       .catch(error => {
           res.status(400).json({ error });

@@ -3,22 +3,20 @@ const express = require('express');
 const sharp = require('sharp');
 const fs = require('fs');
 
- const MIME_TYPES = {
-    'image/jpg' : 'jpg',
-    'image/jpeg' : 'jpeg',
-    'image/png' : 'png'
- };
 
-
-
-// app.post("/", upload.single("image")       Ou le mettre ? dans Books Routes ? 
 exports.uploadImage = async (req, res, next) => {
+
+    if (!req.file) {
+        // Si aucun fichier n'est téléchargé, passer au middleware suivant
+        return next();
+    }
     fs.access("./images", (error) => {
         if (error) {
             fs.mkdirSync('./images');
         }
         
     });
+   
     const { buffer, originalname } = req.file;
     const newName = originalname.split('.')[0];
     const timestamp = new Date().toISOString();
@@ -41,7 +39,11 @@ exports.uploadImage = async (req, res, next) => {
 
 
 
-
+// const MIME_TYPES = {
+    //     'image/jpg' : 'jpg',
+    //     'image/jpeg' : 'jpeg',
+    //     'image/png' : 'png'
+    //  };
 // const storage = multer.diskStorage({
 //     destination: (req, file, callback) => {
 //         callback(null, 'images')
