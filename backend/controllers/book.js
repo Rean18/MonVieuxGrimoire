@@ -50,8 +50,7 @@ const fs = require('fs');
 exports.modifyBook = (req, res, next) => {
   const bookObject = req.file ? {
       ...JSON.parse(req.body.book),
-      imageUrl: req.imageUrl
-    //   `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      imageUrl: req.imageUrl // récupérée du multer-config
   } : { ...req.body };
 
   delete bookObject.userId;
@@ -61,6 +60,7 @@ exports.modifyBook = (req, res, next) => {
           if (book.userId != req.auth.userId) {
               res.status(401).json({ message: 'Non-autorisé' });
           }
+          // Conserver le lien déjà présent lorsque la modification d'un livre n'inclut pas la modif de l'image
           if (!req.file){
             bookObject.imageUrl = book.imageUrl
           }
